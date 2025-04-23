@@ -1,0 +1,26 @@
+[
+    {
+        "type": "image",
+        "path": "louis-hansel-onxjrr3Erwc-unsplash.jpg",
+        "caption": "Intro photo",
+        "credit" : "https://unsplash.com/@louishansel"
+    },
+    {
+        "type": "image",
+        "path": "elena-leya-wLzkojKzAUc-unsplash.jpg",
+        "caption": "Serving suggestion",
+        "credit": "https://unsplash.com/@foodistika"
+    },
+    {
+        "type": "video",
+        "path": "egg-recipe-video.mp4",
+        "caption": "Jamie Oliver's thoughts",
+        "credit" : "https://youtu.be/Mw-5pQBbZvA?feature=shared"
+    },
+    {
+        "type": "image",
+        "path": "annie-spratt-49Y9j30lGyg-unsplash.jpg",
+        "caption": "Happy egg.",
+        "credit": "https://unsplash.com/@anniespratt"      
+    }      
+]

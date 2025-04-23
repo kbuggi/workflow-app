@@ -1,0 +1,123 @@
+{
+    "Identity": {
+        "Type" : "Recipe",
+        "Name" : "Eggs and Soldiers",
+        "Version" : 0.3,
+        "AuthorID" : "katy",
+        "Comment" : "Add timings, difficulty, etc here too?"
+    }, 
+    "GoStream" : "Eggs",
+    "PreFlight" : {
+        "Description" : "Minimal skill and equipment; note uses boiling water",
+        "EssentialEquipment" : ["ElectricKettle", "Toaster", "Stove", "SmallPan", "Spatula", "BreadKnife"],
+        "OptionalEquipment" : ["ButterKnife for spread", "ToastTongs"],
+        "EssentialIngredients" : ["Medium Eggs : 2", "Bread : 2 slices", "Salt : Pinch", "Tap Water : 500ml / 2 cups"],
+        "OptionalIngredients" : ["Spread : Cooks discretion"],
+        "EssentialServing" : ["Plate : 1"],
+        "OptionalServing" : ["EggCup : ideally 2", "Small spoon : 1"],
+        "Steps" : ["Check eggs are in date or do freshness check", "Put the eggs into a bowl, and remainder back into the fridge", "Take out the ingredients", "Take out equipment and clean if necessary", "Ensure the stove is clear", "Ensure there is clear space for platng up"]
+    },
+    "PostFlight" : {
+        "Description" : "Very basic steps to ensure the kitchen is safe",
+        "Steps": ["Ensure Stove and burner are safely off", "Ensure pan with hot water is in safe location", "Clear up any significant spills"],
+        "LaterSteps" : ["Carefully empty the hot water into the sink", "Clear eggshells and any food waste into food reycling", "Put away any unused ingredients", "Wash up Equipment and ServingItems", "Clean worksurface", "Put away Equipment and ServingItems"]
+    },
+    //TODO implement
+    "Final" : {
+        "Steps": ["Put egg into egg cup", "Place egg cup, spoon and plate onto a tray", "Enjoy!"],
+        "Image" : "todo.jpg"
+    },
+    "Streams" : {
+        "Eggs": {
+            // Tasks in Eggs Stream 
+            "Put_kettle_on" : {
+                "Type" : "Active",
+                "Steps" : ["Pour the water into the Kettle", "Close lid", "Turn on"],
+                "DurationSeconds" : 60
+            },
+            "KettleBoiling" : {
+                "Type" : "Background",
+                "Stakes" : "Low",
+                "Steps" : "Click Done/Next when kettle boiled",
+                //TODO Should be an alert if overruns by 2 minutes by default 
+                "DurationSeconds" : 120,
+                "Autoprogress" : true                 
+            },
+            "StartEggs" : {
+                "Title" : "Put the eggs on to boil",
+                "Type" : "Active",
+                "Stakes" : "Low",
+                "Description" : null,
+                "Steps" : [
+                    "Put pan on stove", 
+                    "Pour boiling water into pan", 
+                    "Turn burner on to medium-high",
+                    "Add a pinch of salt to the water", 
+                    "Using the spatula, place each egg into pan"
+                ],
+                "DurationSeconds" : 60,         
+                "Trigger" : "Soldiers"
+            },
+            "BoilingEggs" : {
+                "Title" : "Boiling eggs...",
+                "Type" : "Background",
+                "Description" : "Reduce heat if water might boil over",
+                "Stakes" : "Low",
+
+                "DurationSeconds" : 180,
+                "Autoprogress" : true 
+            }, 
+            "RemoveEggs" : {
+                "Title" : "Remove eggs carefully",
+                "Description" : null,
+                "Type" : "Active",
+                "Stakes" : "High",
+
+                // at duration/45 seconds, if task not done, 
+                // aand every 30 seconds after that, 
+                // alert check if eggs are still cooking 
+                // SHOULD not mix CheckMessage and Autoprogress
+                "DurationSeconds" : 45,         
+                "CheckEverySeconds" : 30, 
+                "CheckMessage" : "Eggs still cooking?",
+                "StartMessage" : "Remove eggs",
+                "Steps" : [
+                    "Turn off burner", 
+                    "Using the spatula, take each egg from water and place in bowl"
+                ]
+            }
+        },
+        "Soldiers" : {
+            "StartToaster" : {
+                "Title" : "Put toast on",
+                "Description" : null,
+                "Steps" : [
+                    "Place toast into toaster", 
+                    "Push the lever"
+                ],
+                "DurationSeconds" : 45,   
+                "Type" : "Active",
+                "Stakes" : "Low"
+            },
+            "MonitorToast" : {
+                "Title" : "Monitor Toast",
+                "DurationSeconds" : 120,
+                "Autoprogress" : true 
+            },
+            "MakeSoldiers" : {
+                "Title" : "Make Soldiers",
+                "Steps" : [
+                    "Carefully take toast out of toaster (using tongs)", 
+                    "Butter the toast (optional)",
+                    "Using the bread knife, cut the toast into 2 cm/1 inch wide strips",
+                    "Place the strips on the plate"
+                ]
+            }
+        }
+    
+    }
+}
+
+
+
+

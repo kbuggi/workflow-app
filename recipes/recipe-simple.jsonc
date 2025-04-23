@@ -1,0 +1,75 @@
+{
+    //Really simple recipe - small enough to keep in the PY code 
+    /* hello */
+    "Identity": {
+        "Name" : "Jacket and tuna"
+    }, 
+    "GoStream" : "JacketStream",
+    "PreFlight" : {
+        "Description" : "this is easy",
+        "EssentialEquipment" : ["Microwave", "MicrowaveBowl", "Knife", "Fork", "TinOpener"],
+        "EssentialIngredients" : ["Tin of Tuna : 1", "Potato : 1 large", "2 tomatoes"],
+        "Steps" : ["Check you have the ingredients"]
+    },
+    "PostFlight" : {
+    },
+    "Streams" : {
+        "JacketStream": {
+            "Settings" : {
+                "Title" : "Jacket Potato",
+                "DisplayColumn" : "Left"            
+            }, // should check half-way
+            "Microwave" : { 
+                "Steps" : ["Prick/stab potato with fork", "Put potato into the MicrowaveBowl", "Set 5 mins/High", "Start Microwave","1","2","3","4","5","6"],
+                "DurationSeconds" : 30,
+                "Description" : "Get the potato going in the Microwave!"
+                "Trigger" : ["TunaStream"]
+            },
+            "Monitor_Microwave" : {
+                "Title" : "Monitor Microwave",
+                "DurationSeconds" : 600,
+                "Autoprogress" : true 
+            },
+            "Remove_Potato" : {
+                "Steps" : ["Carefully take MicrowaveBowl out of Microwave (using gloves) and place on worksurface", 
+                    "Put potato onto the plate (using fork or tongs", "Press Done when complete"],
+                "DurationSeconds" : 30
+            },
+            "TaskPlateUp" : {
+                "Steps" : [
+                    "Cut potato with knife", 
+                    "Butter the potato with your preferred spread",
+                    "Carefully spoon Tuna on top of the potato"],
+                "DurationSeconds" : 600
+
+            }
+        },
+        "TunaStream" : {
+            "Settings" : {
+                "DisplayColumn" : "Middle"            
+            }, // should stir half-way
+            "OpenTin" : {
+                "Steps" : ["Open tin with TinOpener", "Carefully remove lid and discard in recycling","Press Done when complete"],
+                "DurationSeconds" : 45,
+                "Trigger" : [ "TomatoStream"]
+            }
+        },
+        "TomatoStream" : {
+            "Settings" : {
+                "DisplayColumn" : "Right"  
+            },         
+            "Wash" : {
+                "Steps" : ["Wash tomatoes","Press Done when complete"],
+                "DurationSeconds" : 45
+            },
+            "Chop" : {
+                "Steps" : ["Carefully chop tomatoes","Place on plate", "Add a pinch of salt", "Press Done when complete"],
+                "DurationSeconds" : 45
+            }
+        }
+    }
+}
+
+
+
+

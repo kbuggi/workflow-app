@@ -1,0 +1,38 @@
+python3 -m venv venv
+source venv/bin/activate
+
+pip install --upgrade pip
+
+pip  install jsoncparser
+
+#needed for demos
+#pip  install pygame
+
+
+#install PyQt - this downloads a .dmg
+#https://www.qt.io/offline-installers
+
+#https://www.pythonguis.com/installation/install-pyqt6-mac/
+
+pip install pyqt6
+  -> pyqt6-tools? 
+
+pip install pyttsx3
+
+
+pip install PyQt6
+pip install pyqt6 
+#some PyQt stuff here: https://www.pythonguis.com/tutorials/pyqt6-creating-your-first-window/
+
+
+pip install gTTS
+
+
+pip install GitPython
+
+
+###
+pip install speechrecognition
+
+pip install sounddevice numpy speechrecognition pyqt6
+

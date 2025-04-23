@@ -1,0 +1,133 @@
+{
+    //lah 
+    /* hello */
+    "Identity": {
+        "ID" : "2101ebc2-f3c7-11ef-b0d3-82421f089801",
+        "Type" : "Recipe",
+        "Name" : "Eggs and Soldiers",
+        "Version" : 0.3,
+        "AuthorID" : "katy",
+        "Comment" : "Add timings, difficulty, etc here too?"
+    }, 
+    "GoStream" : "EggStream",
+    "PreFlight" : {
+        "Description" : "Only basic items needed; minimal skill; note boiling water so supervise or exclude any children from the cooking area",
+        "EssentialEquipment" : ["ElectricKettle", "Toaster", "Stove", "SmallPan", "Spatula", "BreadKnife"],
+        "OptionalEquipment" : ["ButterKnife for spread", "ToastTongs"],
+        "EssentialIngredients" : ["Medium Eggs : 2", "Bread : 2 slices", "Salt : Pinch", "Tap Water : 500ml / 2 cups"],
+        "OptionalIngredients" : ["Spread : Cooks discretion"],
+        "EssentialServing" : null,
+        "OptionalServing" : ["EggCup : ideally 2", "Plate : 1","Small spoon : 1"],
+        "Steps" : ["Check eggs are in date or do freshness check", "Put the eggs into a bowl, and then back into the fridge", "Take out the ingredients", "Take out equipment and clean if necessary", "Ensure the stove is clear", "Ensure there is clear space for platng up"]
+    },
+    "PostFlight" : {
+        "Description" : "Very basic steps to ensure the kitchen is safe",
+        "Steps": ["Ensure Stove and burner are safely off", "Ensure pan with hot water is in safe location", "Clear up any significant spills"],
+        "LaterSteps" : ["Carefully empty the hot water into the sink", "Clear eggshells and any food waste into food reycling", "Put away any unused ingredients", "Wash up Equipment and ServingItems", "Clean worksurface", "Put away Equipment and ServingItems"]
+    },
+    "Streams" : {
+        "EggStream": {
+            "Settings" : {
+                "Title" : "Eggs",
+                "DisplayColumn" : "Left",
+                "AlwaysDisplay" : false,
+                "CountDown" : true
+            },
+            "Boil" : {
+                "Title" : "Boil kettle",
+                "Description" : "Click Done when boiled",
+                "Steps" : ["Pour the water into the Kettle", "Close lid", "Turn on"],
+                "DurationSeconds" : 120,
+                "Green" : 80,
+                "Amber" : 120,
+                "Red" : 150,
+                "CheckSeverity" : "Low", 
+                "CheckMessage" : "Water Boiling?"
+            },
+            "PlaceEggs" : {
+                "Title" : "Put eggs into pan",
+                "Description" : "We're going to boil eggs carefully - click done when all eggs are in the pan so we time correctly",
+                "Steps" : ["Pour boiling water into pan carefully", "Put pan on a safe burner (normally at back", "Set temperature so that water simmers", "Using the spatula, place each egg into the water"],
+                "Green" : 30,
+                "Amber" : 60,
+                "Red" : 90,
+                "DurationSeconds" : 60,         
+                "CheckSeverity" : "Low", 
+                "CheckMessage" : "Eggs in pan?",
+                "Trigger" : "ToastSoldiersStream"
+            },
+            "MonitorWater" : {
+                "Title" : "Monitor Boiling Water",
+                "Description" : "Let's keep an eye on pan, reduce heat if water might boil over",
+                "CheckEverySeconds" : 45,
+                "CheckMessage" : "Water OK?",
+                "CheckSeverity" : "Low",
+                "DurationSeconds" : 120,
+                "Autoprogress" : true 
+            },
+            "RemoveEggs" : {
+                "Title" : "Remove eggs carefully then hit Done",
+                "Description" : null,
+                "Steps" : ["Turn off burner", "Using the spatula, take each egg from water and place in bowl"],
+                "Green" : 30,
+                "Amber" : 45,
+                "Red" : 90,
+                "DurationSeconds" : 45,         
+                "DurationOverrunMessage" : "Eggs still in pan?",
+                "DurationOverrunSeverity" : "Medium"
+            }
+        },
+        "ToastSoldiersStream" : {
+            "Settings" : {
+                "Title" : "Soldiers",
+                "DisplayColumn" : "Right",
+                "AlwaysDisplay" : false,
+                "CountDown" : true
+            },
+            "StartToaster" : {
+                "Title" : "Start Toaster",
+                "Description" : "Let's put bread on to Toast; click done when bread is toasting so we get the timing right",
+                "Steps" : ["Set toaster to low-medium", "Place toast into toaster", "Depress the lever","Press Done when complete"],
+                "Green" : 30,
+                "Amber" : 45,
+                "Red" : 90,
+                "DurationSeconds" : 45,   
+                "DurationOverrunMessage" : "Toast cooking?",
+                "DurationOverrunSeverity" : "Medium"
+            },
+            "MonitorToast" : {
+                "Title" : "Monitor Toast",
+                "Description" : "Let's keep an eye on toast",
+                "CheckEverySeconds" : 45,
+                "CheckMessage" : "Toast OK?",
+                "CheckSeverity" : "Low",
+                "DurationSeconds" : 120,
+                "Autoprogress" : true 
+            },
+            "ButterToast" : {
+                "Title" : "Butter toast",
+                "Description" : null,
+                "Steps" : ["Carefully ake toast out of toaster (using tongs)", "Butter the toast with your preferred spread"],
+                "Trigger" : "PlateStream"
+            }
+        },
+        "PlateStream" : {
+            "Settings" : {
+                "Title" : "PlateStream",
+                "DisplayColumn" : "Middle",
+                "AlwaysDisplay" : false,
+                "CountDown" : true
+            },
+            "TaskPlateUp" : {
+                    "Title" : "Plate up",
+                    "Description" : null,
+                    "Steps" : ["Slice bread into 2 cm/1 inch wide soliders", "Place Soldier on plate", "Place Eggs into EggCups or Bowl", "Enjoy!"]
+            }
+        }
+    
+    }
+}
+
+
+
+

@@ -1,0 +1,32 @@
+# tick in 5 seconds 
+python3 Workstream_Player.py  recipes/recipe-eggs-toast-and-soldiers.jsonc
+
+***** this doesn't work with recipes/recipe-with-set-streams.jsonc anymore ****
+
+
+python3 GridWorkflowUI.py recipes/recipe-with-set-streams.jsonc
+python3 GridWorkflowUI.py recipes/recipe-eggs-toast-and-soldiers.jsonc
+
+Slideshow: shows photos & video in slideshow mode (external using VLC). Click fullscreen button if it doesn't do it for you.
+-> original attempt using Qt was weird (the video player can't show photos, so you have to create & destroy controls)
+
+python3 Spikes/slide_show.py Spikes/album/album.json -f Spikes/album
+
+#TreeViewer : opens JSON/JSONC via dialog. Always opens last file on start. Also remembers recently opened files.
+-> Command+ increases font size/Command- decreases.
+python3 Spikes/TreeViewer.py
+
+GitSync:  shows syncing files from a tiny github repository in a separate thread
+-> clean local copy first? or during demo?
+
+ls -la /tmp/GitSync/Config/.git
+ls  /tmp/GitSync/
+
+rm -r  /tmp/GitSync/Config 
+python3 Spikes/GitSync.py
+
+
+
+
+
+
