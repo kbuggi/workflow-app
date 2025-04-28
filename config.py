@@ -7,10 +7,14 @@ class Config:
     ICONS_PATH = f"{RESOURCE_PATH}/icons"
     AUDIO_PATH = f"{RESOURCE_PATH}/audio"
 
-    # Icons
+    # Icons from https://fontawesome.com
     ICON_DELETE = QIcon(f"{ICONS_PATH}/circle-xmark-solid.svg")
-    ICON_PAUSE = QIcon(f"{ICONS_PATH}/pause-icon.svg")  # Example for pause icon
-    ICON_RESUME = QIcon(f"{ICONS_PATH}/play-icon.svg")  # Example for resume icon
+    ICON_PAUSE = QIcon(f"{ICONS_PATH}/pause-solid.svg")  
+    ICON_RESUME = QIcon(f"{ICONS_PATH}/play-solid.svg") 
+    ICON_EXTEND = QIcon(f"{ICONS_PATH}/plus-solid.svg")  
+    ICON_REDUCE = QIcon(f"{ICONS_PATH}/minus-solid.svg")     
+    ICON_DONE = QIcon(f"{ICONS_PATH}/forward-solid.svg") 
+    ICON_BACK = QIcon(f"{ICONS_PATH}/backward-solid.svg") 
 
     # Icon sizes
     ICON_SIZE_SMALL = QSize(24, 24)
@@ -23,6 +27,8 @@ class Config:
     BUTTON_FONT = QFont("Arial", 20)
 
     # Colors
+    # TODO change disabled colour to darkgrey 
+    # also change flight checklists to grey or lightgrey
     BG_COLOR = "DarkGrey"
     ACTIVE_BG_COLOR = "White"
     TIMER_BG_COLORS = {
@@ -31,6 +37,8 @@ class Config:
         "green": "lightgreen",
         "default": "lightgrey",
     }
+    BUTTON_ENABLED_COLOR = "white"
+    BUTTON_DISABLED_COLOR = "DarkGrey"
 
     # Layout settings
     LAYOUT_SPACING = 5

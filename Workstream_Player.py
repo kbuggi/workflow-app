@@ -152,14 +152,16 @@ class CountdownTimer(QWidget):
 
     def init_UI(self):
         self.setWindowTitle("Countdown Timer")
-        self.setGeometry(100, 100, 1200, 800) #X, Y, WIDTH, HEIGHT
+        self.setGeometry(100, 100, 1200, 800)  # X, Y, WIDTH, HEIGHT
 
         # Layout
         self.layout = QVBoxLayout()
+        self.layout.setSpacing(Config.LAYOUT_SPACING)
+        self.layout.setContentsMargins(*Config.LAYOUT_MARGINS)
 
         # Create a QFrame (box) for both the title and description
         self.text_box_frame = QFrame(self)
-        self.text_box_frame.setStyleSheet(f"border: 2px solid black; border-radius: 10px; padding: 10px; background-color: {self.BG_COLOUR};")
+        self.text_box_frame.setStyleSheet(f"border: 2px solid black; border-radius: 10px; padding: 10px; background-color: {Config.BG_COLOR};")
         self.layout.addWidget(self.text_box_frame)
 
         # Layout for the text box (title + description)
@@ -168,99 +170,63 @@ class CountdownTimer(QWidget):
         # Title label inside the box
         self.title_label = QLabel(self.text_box_frame)
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Set a larger font for the title
-        title_font = QFont("Arial", 16) 
-        self.title_label.setFont(title_font)
-        self.title_label.setStyleSheet("color: black;")  
+        self.title_label.setFont(Config.TITLE_FONT)
+        self.title_label.setStyleSheet("color: black;")
         text_box_layout.addWidget(self.title_label)
 
-        # Description label inside the box (single-line)
+        # Description label inside the box
         self.description_label = QLabel(self.text_box_frame)
         self.description_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        description_font = QFont("Arial", 18)
-        self.description_label.setFont(description_font)
+        self.description_label.setFont(Config.DESCRIPTION_FONT)
         self.description_label.setStyleSheet("color: black; font-style: italic;")
-
         text_box_layout.addWidget(self.description_label)
 
         # Steps label inside the box (multi-line)
         self.steps_label = QTextEdit(self.text_box_frame)
-        self.steps_label.setReadOnly(True)  
-
-        steps_font = QFont( app.settings.value("fixed_font"), 18)
-        self.steps_label.setFont(steps_font)
-        # Get the text cursor for the QTextEdit
-        cursor = self.steps_label.textCursor()
-
-        # Select the entire document
-        cursor.select(QTextCursor.SelectionType.Document)
-
-        # Create a QTextBlockFormat and set the line height
-        block_format = QTextBlockFormat()
-        block_format.setLineHeight(150, QTextBlockFormat.LineHeightTypes.ProportionalHeight.value)  # 150% line height
-
-        # Apply the block format to the selected text
-        cursor.mergeBlockFormat(block_format)
-        self.steps_label.setTextCursor(cursor)
-        self.steps_label.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.steps_label.setStyleSheet("color: black; ")
-        font_metrics = QFontMetrics(self.steps_label.font())
-        line_height = font_metrics.lineSpacing() 
-        #self.steps_label.setMinimumHeight( int(10 * 18 * 1.5))  #roughly 10 rows but hardcoding of fontsize
-        self.steps_label.setMinimumHeight( int(10 * line_height) + 22 ) #padding & border radius  
-
+        self.steps_label.setReadOnly(True)
+        self.steps_label.setFont(Config.DESCRIPTION_FONT)
+        self.steps_label.setStyleSheet("color: black;")
         text_box_layout.addWidget(self.steps_label)
 
-        self.setLayout(self.layout)
-
-
-        # Set the layout for the text box
         self.text_box_frame.setLayout(text_box_layout)
 
-        # Create Timer 
+        # Create Timer
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_timer)
 
         # Create a QFrame (box) for the timer
         self.timer_box = QFrame(self)
-        self.timer_box.setStyleSheet("border: 2px solid black; border-radius: 10px; padding: 10px; background-color: lightgrey;")
+        self.timer_box.setStyleSheet(f"border: 2px solid black; border-radius: 10px; padding: 10px; background-color: {Config.TIMER_BG_COLORS['default']};")
         self.layout.addWidget(self.timer_box)
 
         # Timer display label inside the box
         self.timer_label = QLabel(self.timer_box)
         self.timer_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Set a larger font for the timer display
-        font = QFont("Arial", 30)
-        self.timer_label.setFont(font)
-        self.timer_label.setStyleSheet("color: black;")  
-
-        # Add the label to the timer box layout
+        self.timer_label.setFont(Config.TIMER_FONT)
+        self.timer_label.setStyleSheet("color: black;")
         box_layout = QVBoxLayout()
         box_layout.addWidget(self.timer_label)
         self.timer_box.setLayout(box_layout)
 
-        # Status label; this sits on a black background hence white font. Blank at start
-        self.status_label = QLabel(self) 
-        self.status_label.setText(f"") 
-        self.status_label.setStyleSheet("color: white;")  
+        # Status label # TODO remove status bar 
+        self.status_label = QLabel(self)
+        self.status_label.setText("")
+        self.status_label.setStyleSheet("color: white;")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.layout.addWidget(self.status_label)
 
-        # Buttons: Start, Done, Snooze, and Delete; only Done is active
-        #User feedback change -  icons not words or words & icons
-        #switch the order
-
-        #Pause/Start & layout
-        self.pause_button = QPushButton("⏸️", self)
-        self.pause_button.setStyleSheet("color: black;")  
+        # Buttons: Pause/Resume
+        self.pause_button = QPushButton(self)
+        self.pause_button.setIcon(Config.ICON_PAUSE)
+        self.pause_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.pause_button.setStyleSheet("color: black;")
         self.pause_button.clicked.connect(self.pressed_pause)
         self.pause_button.setEnabled(False)
 
-        self.resume_button = QPushButton("▶️", self)
-        self.resume_button.setStyleSheet("color: black;")  
+        self.resume_button = QPushButton(self)
+        self.resume_button.setIcon(Config.ICON_RESUME)
+        self.resume_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.resume_button.setStyleSheet("color: black;")
         self.resume_button.clicked.connect(self.pressed_resume)
         self.resume_button.setEnabled(False)
 
@@ -269,15 +235,22 @@ class CountdownTimer(QWidget):
         self.resume_pause_button_layout.addWidget(self.resume_button)
         self.layout.addLayout(self.resume_pause_button_layout)
 
-
-        #Extend/Reduce & layout
-        self.reduce_button = QPushButton("➖ 30s", self)
-        self.reduce_button.setStyleSheet("color: black;")  
+        # Extend/Reduce Buttons
+        self.reduce_button = QPushButton(self)
+        self.reduce_button.setIcon(Config.ICON_REDUCE)
+        self.reduce_button.setText("30s")  # Set the text
+        self.reduce_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.reduce_button.setFont(Config.BUTTON_FONT)
+        self.reduce_button.setStyleSheet("color: black;")
         self.reduce_button.clicked.connect(self.pressed_reduce)
         self.reduce_button.setEnabled(False)
 
-        self.extend_button = QPushButton("➕ 30s", self)
-        self.extend_button.setStyleSheet("color: black;")  
+        self.extend_button = QPushButton(self)
+        self.extend_button.setIcon(Config.ICON_EXTEND)
+        self.extend_button.setText("30s")  # Set the text
+        self.extend_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.extend_button.setFont(Config.BUTTON_FONT)
+        self.extend_button.setStyleSheet("color: black;")
         self.extend_button.clicked.connect(self.pressed_extend)
         self.extend_button.setEnabled(False)
 
@@ -286,11 +259,13 @@ class CountdownTimer(QWidget):
         self.reduce_extend_button_layout.addWidget(self.extend_button)
         self.layout.addLayout(self.reduce_extend_button_layout)
 
-        #Done button; initially labelled "Start"
-        self.done_button = QPushButton("⏭️ Start", self)
-        done_font = QFont("Arial", 20)
-        self.done_button.setFont(done_font)
-        self.done_button.setStyleSheet("color: black;")  
+        # Done Button
+        self.done_button = QPushButton(self)
+        self.done_button.setIcon(Config.ICON_DONE)
+        self.done_button.setText(" Start") 
+        self.done_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.done_button.setFont(Config.BUTTON_FONT)
+        self.done_button.setStyleSheet("color: black;")
         self.done_button.clicked.connect(self.pressed_done_next_task)
         self.done_button.setEnabled(True)
 
@@ -298,62 +273,28 @@ class CountdownTimer(QWidget):
         self.done_button_layout.addWidget(self.done_button)
         self.layout.addLayout(self.done_button_layout)
 
-
-
-        # Back/Close & layout
-        self.back_button = QPushButton("(⏮️ back)", self)
-        self.back_button.setStyleSheet("color: black;")  
+        # Back/Close Buttons
+        self.back_button = QPushButton(self)
+        self.back_button.setIcon(Config.ICON_BACK)
+        self.back_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.back_button.setFont(Config.BUTTON_FONT)
+        self.back_button.setStyleSheet("color: black;")
         self.back_button.clicked.connect(self.pressed_back)
         self.back_button.setEnabled(False)
 
-        # TESTING OUT icon
         self.delete_button = QPushButton(self)
-        self.delete_button.setIcon(Config.ICON_DELETE)  # Use the centralized icon
-        self.delete_button.setIconSize(Config.ICON_SIZE_SMALL)  # Use the centralized icon size
-        self.delete_button.setStyleSheet("color: black;")  
+        self.delete_button.setIcon(Config.ICON_DELETE)
+        self.delete_button.setIconSize(Config.ICON_SIZE_SMALL)
+        self.delete_button.setStyleSheet("color: black;")
         self.delete_button.clicked.connect(self.pressed_close_stream)
         self.delete_button.setEnabled(False)
-
 
         self.back_close_button_layout = QHBoxLayout()
         self.back_close_button_layout.addWidget(self.back_button)
         self.back_close_button_layout.addWidget(self.delete_button)
         self.layout.addLayout(self.back_close_button_layout)
 
-
-        # Tweak spacing - Main layout
-        self.layout.setSpacing(5)  # Reduce spacing between widgets
-        self.layout.setContentsMargins(5, 5, 5, 5)  # Reduce margins around the layout
-
-        # Done button layout
-        self.done_button_layout.setSpacing(5)
-        self.done_button_layout.setContentsMargins(0, 0, 0, 0)
-
-        # Start/Pause button layout
-        self.resume_pause_button_layout.setSpacing(5)
-        self.resume_pause_button_layout.setContentsMargins(0, 0, 0, 0)
-
-        # Reduce/Extend button layout
-        self.reduce_extend_button_layout.setSpacing(5)
-        self.reduce_extend_button_layout.setContentsMargins(0, 0, 0, 0)
-
-        # Back/Close button layout
-        self.back_close_button_layout.setSpacing(5)
-        self.back_close_button_layout.setContentsMargins(0, 0, 0, 0)
-
-        #User feedback change -  add tool tips to explain buttons
-        # Tooltips for buttons
-        self.done_button.setToolTip("Press when task is done to move to next task in stream")
-        self.resume_button.setToolTip("Resume timer after pausing")
-        self.pause_button.setToolTip("Pause timer - don't forget to resume it")
-      
-        self.back_button.setToolTip("Go back to previous task")
-        self.delete_button.setToolTip("Delete this Stream (can only be pressed once all tasks in this Stream are done)")
-
-        self.extend_button.setToolTip("Add 30 seconds to timer")
-        self.reduce_button.setToolTip("Remove 30 seconds from timer")
-
-        # Initial state
+        # Finalize Layout
         self.setLayout(self.layout)
 
     def overrun_alert(self):
@@ -463,17 +404,17 @@ class CountdownTimer(QWidget):
         if self.current_task.task_next is None:
             if  self.timer_running:  #entering final task
                 logger.info("Final task; OK to press Done")
-                self.done_button.setText("⏭️ Done [Final Task]")
+                self.done_button.setText(" Done [Final Task]")
             else: #final task is now done
                 logger.info("Enabling delete button/Disabling all other buttons")
-                self.done_button.setText("[No tasks remaining]")
+                self.done_button.setText(" [No tasks remaining]") # TODO maybe remove icon? 
                 self.delete_button.setEnabled(True)
                 self.done_button.setDisabled(True)
                 self.pause_button.setDisabled(True)
                 self.resume_button.setDisabled(True) 
                 self.extend_button.setDisabled(True)
                 self.reduce_button.setDisabled(True)
-                self.update_button_colors()
+                #self.update_button_colors()
                 #User feedback change -  play happy sound on last task
                 self.parent_instance.speaker.fun_alert()
                 #User feedback change -  open checklist automatically on last task
@@ -481,7 +422,7 @@ class CountdownTimer(QWidget):
         else:
             self.delete_button.setDisabled(True)
             if self.timer_running:
-                self.done_button.setText("⏭️ Done")
+                self.done_button.setText(" Done")
 
 
         # Update button colors for visual feedback
@@ -489,48 +430,48 @@ class CountdownTimer(QWidget):
 
     def update_button_colors(self): #TODO maybe have a list of buttons & do automatically
         """Update the button colors based on their enabled/disabled state."""
-        BUTTON_ENABLED_COLOR = "white"
-        BUTTON_DISABLED_COLOR = "grey"
-        # Done Button Color
+        
+        # Done Button Color 
         if self.done_button.isEnabled():
             self.done_button.setStyleSheet("background-color: lightgreen; color: black;")
         else:
             self.done_button.setStyleSheet("background-color: lightgrey; color: black;")
 
-        # Start Button Color
+        # Resume Button Color
         if self.resume_button.isEnabled():
-            self.resume_button.setStyleSheet("background-color: white; color: black;")
+            self.resume_button.setStyleSheet(Config.BUTTON_ENABLED_COLOR) # TODO check - this doesn't seem to be different to built in setDisabled style 
         else:
-            self.resume_button.setStyleSheet("background-color: lightgrey; color: black;")
+            self.resume_button.setStyleSheet(Config.BUTTON_DISABLED_COLOR)
 
-        # pause Button Color
+        # Pause Button Color
         if self.pause_button.isEnabled():
-            self.pause_button.setStyleSheet("background-color: white; color: black;")
+            self.pause_button.setStyleSheet(Config.BUTTON_ENABLED_COLOR)
         else:
-            self.pause_button.setStyleSheet("background-color: lightgrey; color: black;")
+            self.pause_button.setStyleSheet(Config.BUTTON_DISABLED_COLOR)
 
-        # extend Button Color
+        # Extend Button Color
         if self.extend_button.isEnabled():
-            self.extend_button.setStyleSheet("background-color: white; color: black;")
+            self.extend_button.setStyleSheet(Config.BUTTON_ENABLED_COLOR)
         else:
-            self.extend_button.setStyleSheet("background-color: lightgrey; color: black;")
+            self.extend_button.setStyleSheet(Config.BUTTON_DISABLED_COLOR)
 
+        # Reduce Button Color
         if self.reduce_button.isEnabled():
-            self.reduce_button.setStyleSheet("background-color: white; color: black;")
+            self.reduce_button.setStyleSheet(Config.BUTTON_ENABLED_COLOR)
         else:
-            self.reduce_button.setStyleSheet("background-color: lightgrey; color: black;")
+            self.reduce_button.setStyleSheet(Config.BUTTON_DISABLED_COLOR)
 
         # Back Button Color
         if self.back_button.isEnabled():
-            self.back_button.setStyleSheet("background-color: white; color: black;")
+            self.back_button.setStyleSheet(Config.BUTTON_ENABLED_COLOR)
         else:
-            self.back_button.setStyleSheet("background-color: lightgrey; color: black;")
+            self.back_button.setStyleSheet(Config.BUTTON_DISABLED_COLOR)
 
         # Delete Button Color
         if self.delete_button.isEnabled():
-            self.delete_button.setStyleSheet("background-color: white; color: black;")
+            self.delete_button.setStyleSheet(Config.BUTTON_ENABLED_COLOR)
         else:
-            self.delete_button.setStyleSheet("background-color: lightgrey; color: black;")
+            self.delete_button.setStyleSheet(Config.BUTTON_DISABLED_COLOR)
 
     def pressed_back(self):
         logger.info("Back task triggered!")
@@ -550,7 +491,7 @@ class CountdownTimer(QWidget):
         if self.current_task.task_previous is None and not self.timer_running: #Very beginning
             self.start_timer()
             logger.info("Kick off timing - first task triggered")
-            self.done_button.setText("⏭️ Done")
+            self.done_button.setText(" Done")
             self.reset_UI()
             return
 
@@ -595,7 +536,7 @@ class CountdownTimer(QWidget):
     def start_timer(self):
         self.timer.start(1000)  # Start the timer with an interval of 1 second (but counting down every 5 seconds)
         self.timer_running = True
-        self.resume_button.setText("▶️")
+        self.resume_button.setIcon(Config.ICON_RESUME) 
         self.update_button_states()
         self.update_status_label()
 
