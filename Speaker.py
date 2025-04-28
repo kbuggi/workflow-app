@@ -71,9 +71,9 @@ class Speaker(QObject):
         except Exception as e:
             print(f"Speaker:Failed to delete temp folder: {e}")
     def fun_alert(self):
-        self.play_audio_file("audio_resources/submarine.mp3")
+        self.play_audio_file("resources\audio/submarine.mp3")
     def fun_alert2(self):
-        self.play_audio_file("audio_resources/ping.mp3")
+        self.play_audio_file("resources\audio/ping.mp3")
 
 
 

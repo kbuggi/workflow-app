@@ -1,10 +1,10 @@
 import sys, platform
-from PyQt6.QtCore import QTimer, Qt, QSettings
+from PyQt6.QtCore import QTimer, Qt, QSettings, QSize
 from PyQt6.QtWidgets import QApplication, QMessageBox, QMainWindow, QMenuBar, QWidget, QLabel, QVBoxLayout, QPushButton, QFrame, QTextEdit, QHBoxLayout, QStatusBar
-from PyQt6.QtGui import QFont, QTextFormat, QTextBlockFormat, QTextCursor, QFontMetrics, QFontDatabase
+from PyQt6.QtGui import QFont, QTextFormat, QTextBlockFormat, QTextCursor, QFontMetrics, QFontDatabase, QIcon
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import QUrl, QThread, pyqtSignal, QObject
-
+from config import Config
 
 import time
 import logging
@@ -300,17 +300,20 @@ class CountdownTimer(QWidget):
 
 
 
-
         # Back/Close & layout
         self.back_button = QPushButton("(⏮️ back)", self)
         self.back_button.setStyleSheet("color: black;")  
         self.back_button.clicked.connect(self.pressed_back)
         self.back_button.setEnabled(False)
 
-        self.delete_button = QPushButton("🗑️", self)
+        # TESTING OUT icon
+        self.delete_button = QPushButton(self)
+        self.delete_button.setIcon(Config.ICON_DELETE)  # Use the centralized icon
+        self.delete_button.setIconSize(Config.ICON_SIZE_SMALL)  # Use the centralized icon size
         self.delete_button.setStyleSheet("color: black;")  
         self.delete_button.clicked.connect(self.pressed_close_stream)
         self.delete_button.setEnabled(False)
+
 
         self.back_close_button_layout = QHBoxLayout()
         self.back_close_button_layout.addWidget(self.back_button)

@@ -63,8 +63,8 @@ class MainWindow(QMainWindow):
 
 
         # Connect buttons
-        self.audio_button1.clicked.connect(lambda: self.worker.play_audio_file("audio_resources/ping.mp3"))
-        self.audio_button2.clicked.connect(lambda: self.worker.play_audio_file("audio_resources/submarine.mp3"))
+        self.audio_button1.clicked.connect(lambda: self.worker.play_audio_file("resources\audio/ping.mp3"))
+        self.audio_button2.clicked.connect(lambda: self.worker.play_audio_file("resources\audio/submarine.mp3"))
         self.tts_button1.clicked.connect(lambda: self.worker.speak("Hello world"))
         self.tts_button2.clicked.connect(lambda: self.worker.speak("Happy Viva"))
 
