@@ -261,8 +261,9 @@ class CountdownTimer(QWidget):
 
         # Done Button
         self.done_button = QPushButton(self)
+        self.done_button.setText(" Start Recipe!") 
         self.done_button.setIcon(Config.ICON_DONE)
-        self.done_button.setText(" Start") 
+        self.done_button.setToolTip("Start when you're ready to begin the recipe")
         self.done_button.setIconSize(Config.ICON_SIZE_SMALL)
         self.done_button.setFont(Config.BUTTON_FONT)
         self.done_button.setStyleSheet("color: black;")
@@ -387,6 +388,14 @@ class CountdownTimer(QWidget):
             self.extend_button.setEnabled(True)
             self.reduce_button.setEnabled(True)
             self.done_button.setEnabled(True)
+
+            # Set tooltips for enabled buttons
+            self.pause_button.setToolTip("Pause")
+            self.resume_button.setToolTip("")  # Clear tooltip for disabled button
+            self.extend_button.setToolTip("Add 30 seconds")
+            self.reduce_button.setToolTip("Remove 30 seconds")
+            self.done_button.setToolTip("Move onto next task")
+
         else:
             # When the timer is not running, enable the resume/resume button (done can be pressed anyway)
             self.resume_button.setEnabled(True)
@@ -394,11 +403,19 @@ class CountdownTimer(QWidget):
             self.extend_button.setEnabled(False)
             self.reduce_button.setEnabled(False)
 
+            # Set tooltips for enabled buttons
+            self.resume_button.setToolTip("Resume")
+            self.pause_button.setToolTip("Already Paused")  # Clear tooltip 
+            self.extend_button.setToolTip("Cannot extend the timer while paused")  # Clear tooltip
+            self.reduce_button.setToolTip("Cannot reduce the timer while paused")  # Clear tooltip
+
+
         if self.current_task.task_previous is None:
             self.back_button.setDisabled(True) 
+            self.back_button.setToolTip("")  # Clear tooltip 
         else:
             self.back_button.setEnabled(True) 
-
+            self.back_button.setToolTip("Go back to the previous task")
 
         # Allow delete only at the end of the Stream when done has been pressed 
         if self.current_task.task_next is None:
@@ -409,7 +426,9 @@ class CountdownTimer(QWidget):
                 logger.info("Enabling delete button/Disabling all other buttons")
                 self.done_button.setText(" [No tasks remaining]") # TODO maybe remove icon? 
                 self.delete_button.setEnabled(True)
+                self.delete_button.setToolTip("Close this stream")
                 self.done_button.setDisabled(True)
+                self.done_button.setToolTip("No more tasks!") 
                 self.pause_button.setDisabled(True)
                 self.resume_button.setDisabled(True) 
                 self.extend_button.setDisabled(True)
@@ -421,6 +440,7 @@ class CountdownTimer(QWidget):
                 self.parent_instance.open_post_checklist()
         else:
             self.delete_button.setDisabled(True)
+            self.delete_button.setToolTip("Can only close once stream is complete") 
             if self.timer_running:
                 self.done_button.setText(" Done")
 
@@ -431,9 +451,11 @@ class CountdownTimer(QWidget):
     def update_button_colors(self): #TODO maybe have a list of buttons & do automatically
         """Update the button colors based on their enabled/disabled state."""
         
-        # Done Button Color 
-        if self.done_button.isEnabled():
+        # Done Button Color
+        if self.done_button.text() == " Start Recipe!":  # Check if it's in the initial state TODO make less hacky
             self.done_button.setStyleSheet("background-color: lightgreen; color: black;")
+        elif self.done_button.isEnabled():
+            self.done_button.setStyleSheet("background-color: lightgrey; color: black;")
         else:
             self.done_button.setStyleSheet("background-color: lightgrey; color: black;")
 
@@ -488,42 +510,41 @@ class CountdownTimer(QWidget):
 
     def pressed_done_next_task(self):
         logger.info("Next task triggered!")
-        if self.current_task.task_previous is None and not self.timer_running: #Very beginning
+        if self.current_task.task_previous is None and not self.timer_running:  # Very beginning
             self.start_timer()
             logger.info("Kick off timing - first task triggered")
-            self.done_button.setText(" Done")
+            self.done_button.setText(" Done")  # Change the button text after the first press
             self.reset_UI()
             return
-
 
         if self.current_task.trigger_stream_list:
             for s in self.current_task.trigger_stream_list:
                 try:
-                    logger.info( f"Attempting to trigger stream {s.name} from task {self.current_task.fullname} !")
-                    new_obj = self.__class__(s, self._parent_layout, auto_start = True, parent_instance = self.parent_instance)
+                    logger.info(f"Attempting to trigger stream {s.name} from task {self.current_task.fullname}!")
+                    new_obj = self.__class__(s, self._parent_layout, auto_start=True, parent_instance=self.parent_instance)
                     self.triggered_Instances.append(new_obj)
                     self._parent_layout.addWidget(new_obj)
-                    logger.info( f"Success: done trigger stream {s.name} from task {self.current_task.fullname} !")
+                    logger.info(f"Success: done trigger stream {s.name} from task {self.current_task.fullname}!")
                 except ValueError as e:
-                    logger.exception( f"Failed to trigger stream {s.name} from task {self.current_task.fullname} {e}!")
+                    logger.exception(f"Failed to trigger stream {s.name} from task {self.current_task.fullname} {e}!")
                 except Exception as e:
-                    logger.exception( f"Failed to trigger stream {s.name} from task {self.current_task.fullname} {e}!")
+                    logger.exception(f"Failed to trigger stream {s.name} from task {self.current_task.fullname} {e}!")
 
         if self.current_task.task_next is not None:
             self.current_task = self.current_task.task_next
-            logger.info(  f"Resetting; current_task is now {self.current_task.fullname}")
+            logger.info(f"Resetting; current_task is now {self.current_task.fullname}")
             if not self.timer_running:
                 logger.info("Done_Next button pressed whilst timer paused; restarting timer")
                 self.start_timer()
 
             self.reset_state_jumped_task()
             self.reset_UI()
-        else: #Final task is done for this strream 
+        else:  # Final task is done for this stream
             self.timer.stop()
             self.timer_running = False
-            logger.error( f"Done  triggered on {self.current_task.name} - no following task so timer stopped!")
+            logger.error(f"Done triggered on {self.current_task.name} - no following task so timer stopped!")
             self.update_button_states()
-            self.update_timer_colour(grey = True)
+            self.update_timer_colour(grey=True)
             self.status_label.setText("*** Stream complete ***")
 
 
@@ -704,9 +725,7 @@ class ChecklistExecution (QWidget):
                 #TODO make a nice join
                 self.steps_text += "\n".join(f"  • {v}" for v in value) 
                 self.steps_text += "\n\n"
-        if self.steps_text == "":
-            self.steps_text = "[No steps defined; maybe it's obvious?]"
-
+        # CHECK IF WAS NECESSARY 
         self.steps_label.setPlainText(self.steps_text)  
 
 
@@ -722,9 +741,12 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(w.name)
         self.setGeometry(100, 100, 1200, 500)
 
+        # Menu bar with a fullscreen toggle - think get rid of - ITS NOT EVEN DEEP AHH - added so would auto fullscreen - think can do that w/o the menu bar? - we can make it prettier if we want
         self.menu_bar = QMenuBar(self)
         self.menu_window_menu = self.menu_bar.addMenu("Window")
-
+        toggle_fullscreen_action = QAction("Toggle Fullscreen", self)
+        toggle_fullscreen_action.triggered.connect(self.toggle_fullscreen)
+        self.menu_window_menu.addAction(toggle_fullscreen_action)
         # Central widget + layout
         self.central = QWidget()
         self.main_layout = QVBoxLayout(self.central)
@@ -772,10 +794,15 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.central)
 
 
-
         # TODO - fix this
         # Start a timer to add a menu item dynamically after 30 seconds 
         #QTimer.singleShot(3000, self.add_dynamic_menu_items)
+
+    def toggle_fullscreen(self):
+        if self.isFullScreen():
+            self.showNormal()  # Exit fullscreen mode
+        else:
+            self.showFullScreen()  # Enter fullscreen mode
 
     def init_speaker(self):
         logger.info("Speaker init")

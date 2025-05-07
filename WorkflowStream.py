@@ -195,7 +195,7 @@ class Task:
         )
         #User feedback - changed the default value 
         self.steps = Helper._get_strlist_from_dict(
-            self.dictionary, level1="Steps", default=["No steps defined"]
+            self.dictionary, level1="Steps", default=["No action needed here!"]
         )
         self.type = Helper._get_str_from_dict(
             self.dictionary, level1="Type", default="Background"

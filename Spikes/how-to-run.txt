@@ -1,12 +1,15 @@
 # tick in 5 seconds 
 python3 Workstream_Player.py  recipes/recipe-eggs-toast-and-soldiers.jsonc
 
-***** this doesn't work with recipes/recipe-with-set-streams.jsonc anymore ****
+***** recipes/recipe-with-set-streams.jsonc doesn't work anymore - changed conventions ****
 
-
-python3 GridWorkflowUI.py recipes/recipe-with-set-streams.jsonc
+python3 GridWorkflowUI.py recipes\recipe-eggs-toast-and-soldiers-simple.jsonc
 python3 GridWorkflowUI.py recipes/recipe-eggs-toast-and-soldiers.jsonc
 
+py GridWorkflowUI.py recipes\recipe-eggs-toast-and-soldiers-simple.jsonc
+py GridWorkflowUI.py recipes/recipe-eggs-toast-and-soldiers.jsonc
+
+------------------- SPIKES ----------------------
 Slideshow: shows photos & video in slideshow mode (external using VLC). Click fullscreen button if it doesn't do it for you.
 -> original attempt using Qt was weird (the video player can't show photos, so you have to create & destroy controls)
 

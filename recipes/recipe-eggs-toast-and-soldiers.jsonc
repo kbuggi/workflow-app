@@ -11,11 +11,12 @@
         "Description" : "Minimal skill and equipment; note uses boiling water",
         "EssentialEquipment" : ["ElectricKettle", "Toaster", "Stove", "SmallPan", "Spatula", "BreadKnife"],
         "OptionalEquipment" : ["ButterKnife for spread", "ToastTongs"],
-        "EssentialIngredients" : ["Medium Eggs : 2", "Bread : 2 slices", "Salt : Pinch", "Tap Water : 500ml / 2 cups"],
+        "EssentialIngredients" : ["Medium Eggs : 2", "Bread : 1 slices", "Salt : Pinch", "Tap Water : 500ml / 2 cups"],
         "OptionalIngredients" : ["Spread : Cooks discretion"],
         "EssentialServing" : ["Plate : 1"],
         "OptionalServing" : ["EggCup : ideally 2", "Small spoon : 1"],
         "Steps" : ["Check eggs are in date or do freshness check", "Put the eggs into a bowl, and remainder back into the fridge", "Take out the ingredients", "Take out equipment and clean if necessary", "Ensure the stove is clear", "Ensure there is clear space for platng up"]
+        // USA Fridge version - actually a few users keep them in the fridge
     },
     "PostFlight" : {
         "Description" : "Very basic steps to ensure the kitchen is safe",
@@ -24,7 +25,7 @@
     },
     //TODO implement
     "Final" : {
-        "Steps": ["Put egg into egg cup", "Place egg cup, spoon and plate onto a tray", "Enjoy!"],
+        "Steps": ["Place egg cup, spoon and plate onto a tray", "Cut off the tops and season to taste", "Enjoy!"],
         "Image" : "todo.jpg"
     },
     "Streams" : {
@@ -33,7 +34,7 @@
             "Put_kettle_on" : {
                 "Type" : "Active",
                 "Steps" : ["Pour the water into the Kettle", "Close lid", "Turn on"],
-                "DurationSeconds" : 60
+                "DurationSeconds" : 420
             },
             "KettleBoiling" : {
                 "Type" : "Background",
@@ -53,17 +54,16 @@
                     "Pour boiling water into pan", 
                     "Turn burner on to medium-high",
                     "Add a pinch of salt to the water", 
-                    "Using the spatula, place each egg into pan"
+                    "Using the slotted spoon, place each egg into pan"
                 ],
-                "DurationSeconds" : 60,         
+                "DurationSeconds" : 420,         
                 "Trigger" : "Soldiers"
             },
             "BoilingEggs" : {
                 "Title" : "Boiling eggs...",
+                "Stakes": "High",
                 "Type" : "Background",
-                "Description" : "Reduce heat if water might boil over",
-                "Stakes" : "Low",
-
+                "Description" : "Reduce heat if water boils up",
                 "DurationSeconds" : 180,
                 "Autoprogress" : true 
             }, 
@@ -83,7 +83,7 @@
                 "StartMessage" : "Remove eggs",
                 "Steps" : [
                     "Turn off burner", 
-                    "Using the spatula, take each egg from water and place in bowl"
+                    "Using the slotted spoon, take each egg from water and place in bowl"
                 ]
             }
         },
@@ -100,7 +100,8 @@
                 "Stakes" : "Low"
             },
             "MonitorToast" : {
-                "Title" : "Monitor Toast",
+                "Title" : "Toasting...",
+                "Type" : "Background",
                 "DurationSeconds" : 120,
                 "Autoprogress" : true 
             },
