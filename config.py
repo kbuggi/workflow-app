@@ -28,6 +28,9 @@ class Config:
     ICONS_PATH = f"{RESOURCE_PATH}/icons"
     AUDIO_PATH = f"{RESOURCE_PATH}/audio"
     JSON_PATH = f"{RESOURCE_PATH}/json"
+    SAMPLE_RECIPE_FOLDER_PATH = RESOURCE_PATH + "/sample_recipes"
+    SAMPLE_RECIPE_PATH = SAMPLE_RECIPE_FOLDER_PATH +"/recipe-simple.jsonc"
+
 
     CODE_SLIDESHOW = os.path.join(CODE_PATH, "Media_Player.py")
     CODE_ENGINE = os.path.join(CODE_PATH, "Workflow_Engine.py")

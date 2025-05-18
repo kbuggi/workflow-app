@@ -8,7 +8,7 @@ PyQt6-Qt==6.0.1
 PyQt6-Qt6==6.8.2
 PyQt6_sip==13.10.0
 
-#pyqt6-tools
+pyqt6-tools
 pyttsx3
 
 jsoncparser
@@ -23,7 +23,7 @@ networkx
 requests 
 beautifulsoup4
 isodate
-spacy==3.8.4
-spacy_legacy
+#spacy==3.8.4
+#spacy_legacy
 # python -m spacy download en_core_web_sm
 

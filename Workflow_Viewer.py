@@ -86,13 +86,16 @@ class WorkflowViewer(QMainWindow):
         self.setFocus()
 
     def start_media_player(self):
-        process = QProcess()
-        process.finished.connect(
-            lambda code, status, p=process: self.on_process_finished(p, code, status)
-        )
+        if not self.w:
+            QMessageBox.critical(
+                None,
+                "Error",
+                "No recipe loaded; use Open",
+                QMessageBox.StandardButton.Ok,
+            )
 
-        python = sys.executable
-        code = Config.CODE_SLIDESHOW
+            return
+
         if not self.w.media_file:
             QMessageBox.critical(
                 None,
@@ -102,10 +105,16 @@ class WorkflowViewer(QMainWindow):
             )
 
             return
+
+        process = QProcess()
+        process.finished.connect(
+            lambda code, status, p=process: self.on_process_finished(p, code, status)
+        )
+
+        python = sys.executable
+        code = Config.CODE_SLIDESHOW
         media_file = self.w.media_file
 
-        #
-        # python Media_Player.py --file /Users/katalina/Library/KatalinaM/WorkflowApp/RecipeCache/recipes/recipe-eggs-and-soldiers-final.media.json --path /Users/katalina/Library/KatalinaM/WorkflowApp/RecipeCache/media
         media_file = os.path.join(Config.USER_RECIPE_CACHE_SUBFOLDER, media_file)
         if not os.path.exists(media_file):
             QMessageBox.critical(
@@ -115,6 +124,10 @@ class WorkflowViewer(QMainWindow):
                 QMessageBox.StandardButton.Ok,
             )
             return
+
+
+        #
+        # python Media_Player.py --file /Users/katalina/Library/KatalinaM/WorkflowApp/RecipeCache/recipes/recipe-eggs-and-soldiers-final.media.json --path /Users/katalina/Library/KatalinaM/WorkflowApp/RecipeCache/media
         args = [
             code,
             "--file",
@@ -129,6 +142,17 @@ class WorkflowViewer(QMainWindow):
         self.processes.append(process)
 
     def start_workflow_engine(self):
+        if not self.w or not self.filename:
+            QMessageBox.critical(
+                None,
+                "Error",
+                "No recipe loaded; use Open",
+                QMessageBox.StandardButton.Ok,
+            )
+
+            return
+            
+
         process = QProcess()
         process.finished.connect(
             lambda code, status, p=process: self.on_process_finished(p, code, status)
@@ -171,14 +195,17 @@ class WorkflowViewer(QMainWindow):
 
     def load_most_recent_file(self):
         filename = self.get_most_recent_filename()
-        if filename:
-            self.load_file(filename)
-        else:
-            self.open_file_dialog()
+        if not filename or not os.path.exists(filename):
+            filename=Config.SAMPLE_RECIPE_PATH
+        self.load_file(filename)
 
     def open_file_dialog(self):
         folder = Config.USER_RECIPE_CACHE_FOLDER
+
+        if not os.path.exists(folder):
+            folder=Config.SAMPLE_RECIPE_PATH
         filename, _ = QFileDialog.getOpenFileName(
+                
             self, "Open Recipe", folder, "JSON Files (*.json *.jsonc);;All Files (*)"
         )
         if filename:
@@ -265,7 +292,14 @@ class WorkflowViewer(QMainWindow):
                 )
                 logger.error(f"Warnings building recipe from {filename}: {msg}")
             logger.info("Loaded workstream {self.w.name} from filename {filename} ")
+            self.w = w
+            self.save_most_recent_filename(filename)
+            self.setWindowTitle(self.w.name)
 
+            self.filename = filename
+            self.controller = GridController(self.w.name)
+            self.main_layout.addWidget(self.controller)
+            self.populate_controller()
         except OSError as e:
             msg = f"Uable to open Workflow file {filename}:\n{e}"
             logger.error(msg)
@@ -273,17 +307,9 @@ class WorkflowViewer(QMainWindow):
         except json.decoder.JSONDecodeError as e:
             msg = f"Uable to interpret Workflow file {filename}:\n{e}"
             QMessageBox.critical(self, "Error", msg, QMessageBox.StandardButton.Ok)
-        self.w = w
-        self.save_most_recent_filename(filename)
-        self.setWindowTitle(self.w.name)
-
-        self.filename = filename
-        self.controller = GridController(self.w.name)
-        self.main_layout.addWidget(self.controller)
-        self.populate_controller()
-        # self.controller.show()
-        # self.main_layout.addWidget(self.controller)
-        # TODO - change title bar
+        except TypeError as e:
+            msg = f"Uable to interpret Workflow file {filename}:\n{e}"
+            QMessageBox.critical(self, "Error", msg, QMessageBox.StandardButton.Ok)
 
 
 if __name__ == "__main__":

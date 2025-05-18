@@ -20,7 +20,7 @@
                 "DisplayColumn" : "Left"            
             }, // should check half-way
             "Microwave" : { 
-                "Steps" : ["Prick/stab potato with fork", "Put potato into the MicrowaveBowl", "Set 5 mins/High", "Start Microwave"].
+                "Steps" : ["Prick/stab potato with fork", "Put potato into the MicrowaveBowl", "Set 5 mins/High", "Start Microwave"],
                 "DurationSeconds" : 30,
                 "Description" : "Get the potato going in the Microwave!",
                 "Trigger" : ["TunaStream"]
@@ -69,7 +69,3 @@
         }
     }
 }
-
-
-
-
