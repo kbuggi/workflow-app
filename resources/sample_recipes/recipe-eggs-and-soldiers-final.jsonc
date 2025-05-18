@@ -1,0 +1,128 @@
+{
+    "Identity": {
+        "Type" : "Recipe",
+        "Name" : "Eggs and Soldiers",
+        "Version" : 0.4,
+        "AuthorID" : "katy",
+        "Comment" : "Add timings, difficulty, etc here too?"
+    },
+    "MediaFile" : "recipe-eggs-and-soldiers-final.media.json", 
+    "GoStream" : "Eggs",
+    "PreFlight" : {
+        "Description" : "Prep before we start",
+        "EssentialEquipment" : ["Electric Kettle", "Toaster", "Stove", "Small Pan", "Slotted Spoon", "Knife", "Kitchen Towel"],
+        "OptionalEquipment" : ["Butter Knife", "Toast Tongs"],
+        "EssentialIngredients" : ["Eggs : 2", "Bread : 2 slices", "Salt : Pinch", "Water : 500ml"],
+        "OptionalIngredients" : ["Spread : Optional"],
+        "EssentialServing" : ["Plate : 1", "EggCup : 2", "Small spoon : 1"],
+        "OptionalServing" : ["Ramekin/small jar (if no egg cup): 1",  "Small spoon : 1"],
+        "ExtraSteps" : ["Check if eggs are fresh", "Clear and clean workspace"] 
+    },
+    "Streams" : {
+        "Eggs": {
+            "Put_kettle_on" : {
+                "Type" : "Active",
+                "Steps" : ["Fill kettle with water", "Turn it on"],
+                "DurationSeconds" : 60
+            },
+            "KettleBoiling" : {
+                "Type" : "Background",
+                "Stakes" : "Low",
+                "DurationSeconds" : 120,
+                "Autoprogress" : true                 
+            },
+            "StartEggs" : {
+                "Title" : "Put the eggs on",
+                "Type" : "Active",
+                "Stakes" : "Low",
+                "Steps" : [
+                    "Put pan on stove", 
+                    "Pour boiling water into pan", 
+                    "Turn burner on to medium-high", 
+                    "Add pinch of salt", 
+                    "With slotted spoon, carefully place the eggs in"
+                ],
+                "DurationSeconds" : 60,         
+                "Trigger" : "Soldiers" // Triggers Soldiers Stream (while eggs are boiling)
+            },
+            "BoilingEggs" : {
+                "Title" : "Eggs Boiling...",
+                "Type" : "Background",
+                "Stakes": "High",
+                "Steps" : ["(Keep an eye on water, reduce if boils up)"],
+                "DurationMinutes" : 5, // DEPENDENT ON EGG SIZE
+                "Autoprogress" : true 
+            }, 
+            "RemoveEggs" : {
+                "Title" : "Remove eggs",
+                "Type" : "Active",
+                "Stakes" : "High",
+                "StartMessage" : "Remove eggs",
+                "DurationSeconds" : 45,         // Eggs overcook quickly  
+                "CheckEverySeconds" : 30, 
+                "CheckMessage" : "Eggs still cooking?",
+                "Steps" : [
+                    "Turn off burner", 
+                    "With slotted spoon, Remove eggs from pan, and place into egg cup"
+		]
+            }, 
+
+            "TopEggs" : {
+                "Title" : "Top eggs",
+                "Type" : "Active",
+                "Stakes" : "High",
+                "Steps" : [
+                    "Wrap egg in kitchen towel",
+                    "Cut top off egg with knife",
+		    "Put egg into egg cup",
+		    "Repeat" 
+                ]
+            },
+
+	    "PlateUp" : {
+        	"Steps": ["Put eggs, egg cups and soldiers onto the plate", "Enjoy!"],
+                "DurationSeconds" : 30,
+    	    	"Image" : "todo.jpg"
+  	  }
+	    
+        },
+        "Soldiers" : {
+            "StartToaster" : {
+                "Title" : "Toast bread",
+                "Steps" : [
+                    "Set toaster to correct setting",
+		    "Put toast on"
+                ],
+                "DurationSeconds" : 45,   
+                "Type" : "Active",
+                "Stakes" : "Low"
+            },
+            "MonitorToast" : {
+                "Title" : "Toasting...",
+                "Type" : "Background",
+                "DurationSeconds" : 120,
+                "Autoprogress" : true 
+            },
+            "MakeSoldiers" : {
+                "Title" : "Prepare toast",
+                "Type" : "Active",
+                "Steps" : [
+                    "Remove toast carefully", 
+                    "Butter (optional)", 
+                    "Slice into strips"
+                ],
+                "DurationSeconds" : 60,
+                "Stakes" : "Low"
+            }
+        }
+    },
+    "PostFlight" : {
+        "Description" : "Clean up and ensure safety.",
+        "Steps": ["Turn off stove", "Empty hot water safely"],
+        "LaterSteps" : ["Dispose of eggshells", "Wash and put away items"]
+    }
+}
+
+
+
+

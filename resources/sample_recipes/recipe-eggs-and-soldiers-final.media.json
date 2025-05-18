@@ -1,0 +1,95 @@
+[
+
+  {
+    "filepath": "photo_album/Slide1.png",
+    "caption": "Title Slide"
+  },
+	
+  {
+    "filepath": "photo_album/ingredients.png",
+    "caption": "PreFlight: Ingredients"
+  },
+  {
+    "filepath": "photo_album/equipment.png",
+    "caption": "PreFlight: Equipmet"
+  },
+
+  {
+    "filepath": "photo_album/Slide2.png",
+    "caption": "Eggs: Title Slide"
+  },
+  
+  {
+    "filepath": "photo_album/eggs_kettle_boiling.png",
+    "caption": "Eggs: Fill kettle with water and turn on"
+  },
+
+  {
+    "filepath": "photo_album/eggs_water_into_pan.png",
+    "caption": "Eggs: Pour water into the pan"
+  },
+
+  {
+    "filepath": "photo_album/eggs_into_pan.png",
+    "caption": "Eggs: Put the eggs on"
+  },
+
+  {
+    "filepath": "photo_album/eggs_cooking.png",
+    "caption": "Eggs: Eggs cooking - 5 minutes "
+  },
+
+  
+  {
+    "filepath": "photo_album/eggs_remove_pan.png",
+    "caption": "Eggs: Take eggs out carefully"
+  },
+
+  {
+    "filepath": "photo_album/eggs_top.png",
+    "caption": "Eggs: Wrap egg; Cut top off"
+  },
+
+
+
+  {
+    "filepath": "photo_album/Slide3.png",
+    "caption": "Soldiers: Title Slide"
+  },
+  
+
+  {
+    "filepath": "photo_album/soldiers_into_toaster.png",
+    "caption": "Soldiers: Check setting and put toast on"
+
+  },
+  {
+    "filepath": "photo_album/soldiers_toasting.png",
+    "caption": "Soldiers: Toasting (not burning!)"
+
+  },
+  {
+    "filepath": "photo_album/soldiers_remove_toaster.png",
+    "caption": "Soldiers: Remove toast with tongs"
+  },
+
+  {
+    "filepath": "photo_album/soldiers_butter.png",
+    "caption": "Soldiers: Butter with your preferred spread"
+  },
+  {
+    "filepath": "photo_album/soldiers_cut.png",
+    "caption": "Soldiers: Cut into strips"
+  },
+
+  {
+    "filepath": "photo_album/Slide4.png",
+    "caption": "Plate Up: Title Slide"
+  },
+  
+  {
+    "filepath": "photo_album/plate_up.png",
+    "caption": "Plate up and enjoy! "
+  }
+]
+
