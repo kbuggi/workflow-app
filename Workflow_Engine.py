@@ -1108,8 +1108,6 @@ def critical_error(message: str):
     msg = QMessageBox.critical(None, "Fatal", message, QMessageBox.StandardButton.Abort)
     if NSApplication:  # Bring to front
         NSApp.activateIgnoringOtherApps_(True)
-
-    logger.fatal("still here")
     sys.exit(1)
 
 
@@ -1187,15 +1185,19 @@ if __name__ == "__main__":
             recipe_dict = jsonc.load(file)
         w = WorkflowStream(args.filename, recipe_dict)
         logger.info(f"Loaded {w.name}; go_stream_name: {w.go_stream_name}")
+        warnings = w.build()
+        handle_workflow_build_warnings(warnings)
     except OSError as e:
         logger.error(f"Uable to open Workflow file {args.filename}:\n{e}")
         show_critical_message(f"Uable to open Workflow file {args.filename}:\n{e}")
     except json.decoder.JSONDecodeError as e:
         critical_error(
-            f"Uable to interpret Workflow file {args.filename}\nIt should be JSON/JSONC:\n{e}"
+            f"Uable to interpret Workflow file {args.filename}\nIt should be valid JSON/JSONC workflow:\n{e}"
         )
-    warnings = w.build()
-    handle_workflow_build_warnings(warnings)
+    except TypeError as e:
+        critical_error(
+            f"Uable to interpret Workflow file {args.filename}\nIt should be valid JSON/JSONC workflow\n{e}"
+        )
 
     window = MainWindow(w)
     # User feedback change -  Start the application in fullscreen mode
