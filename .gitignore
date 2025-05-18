@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Environment variables
+.env
+.env.*
+
+# Logs
+*.log
+
+# macOS system files
+.DS_Store
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
