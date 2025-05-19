@@ -45,6 +45,8 @@ class WorkflowViewer(QMainWindow):
         self.w = None
         self.filename = None
         self.controller = None
+        self.setWindowTitle("Workflow_Viewer")
+
         self.central = QWidget()
         self.main_layout = QVBoxLayout(self.central)
 
@@ -65,6 +67,8 @@ class WorkflowViewer(QMainWindow):
         self.start_button.clicked.connect(self.start_recipe)
         button_layout.addWidget(self.start_button)
         self.main_layout.addLayout(button_layout)
+        self.main_layout.addStretch()  # Keep buttons at top
+
         self.setLayout(self.main_layout)
         self.setCentralWidget(self.central)
         # Create Statusbar
@@ -74,6 +78,13 @@ class WorkflowViewer(QMainWindow):
             self.load_file(filename)
         else:
             self.load_most_recent_file()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            if self.isFullScreen():
+                self.showNormal()
+        else:
+            super().keyPressEvent(event)
 
     def on_process_finished(self, process, exitCode, exitStatus):
         self.showFullScreen()
@@ -125,7 +136,6 @@ class WorkflowViewer(QMainWindow):
             )
             return
 
-
         #
         # python Media_Player.py --file /Users/katalina/Library/KatalinaM/WorkflowApp/RecipeCache/recipes/recipe-eggs-and-soldiers-final.media.json --path /Users/katalina/Library/KatalinaM/WorkflowApp/RecipeCache/media
         args = [
@@ -151,7 +161,6 @@ class WorkflowViewer(QMainWindow):
             )
 
             return
-            
 
         process = QProcess()
         process.finished.connect(
@@ -196,20 +205,43 @@ class WorkflowViewer(QMainWindow):
     def load_most_recent_file(self):
         filename = self.get_most_recent_filename()
         if not filename or not os.path.exists(filename):
-            filename=Config.SAMPLE_RECIPE_PATH
+            filename = Config.SAMPLE_RECIPE_PATH
         self.load_file(filename)
 
     def open_file_dialog(self):
         folder = Config.USER_RECIPE_CACHE_FOLDER
 
         if not os.path.exists(folder):
-            folder=Config.SAMPLE_RECIPE_PATH
+            folder = Config.SAMPLE_RECIPE_PATH
+
+        """ QT file open
+        dialog = QFileDialog(self, "Open Recipe")
+        dialog.setOption(QFileDialog.Option.DontUseNativeDialog, True)  # Force Qt dialog
+
+        dialog.setDirectory(folder)
+        dialog.setNameFilters(["JSON Files (*.json *.jsonc)"])
+        dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+        dialog.setOption(QFileDialog.Option.DontUseNativeDialog, True)
+
+        # Hide the sidebar
+        sidebar = dialog.findChild(QWidget, "sidebar")
+        if sidebar:
+            sidebar.hide()
+
+        
+        if dialog.exec():
+            filename = dialog.selectedFiles()[0]
+        else:
+            filename = ""
+        """
+        # OS-speciific file open
         filename, _ = QFileDialog.getOpenFileName(
-                
-            self, "Open Recipe", folder, "JSON Files (*.json *.jsonc);;All Files (*)"
+            self, "Open Recipe", folder, "JSON Files (*.jsonc)"
         )
-        if filename:
+        if filename and os.path.exists(filename):
             self.load_file(filename)
+        else:
+            logger.error(f"Unable to load selected file '{filename}' from open dialog")
 
     def get_most_recent_filename(self):
         settings = QSettings("KatalinaM", "WorkflowApp")
@@ -272,7 +304,8 @@ class WorkflowViewer(QMainWindow):
 
     def load_file(self, filename):
         logger.info(f"Opening workstream recipe filename {filename}")
-        if self.controller:
+        if self.controller: # reset state ready to load 
+            self.setWindowTitle("Workflow_Viewer")
             self.controller.setParent(None)  # Remove the widget from the layout
             del self.controller
             self.controller = None
@@ -306,9 +339,15 @@ class WorkflowViewer(QMainWindow):
             QMessageBox.critical(self, "Error", msg, QMessageBox.StandardButton.Ok)
         except json.decoder.JSONDecodeError as e:
             msg = f"Uable to interpret Workflow file {filename}:\n{e}"
+            logger.error(msg)
             QMessageBox.critical(self, "Error", msg, QMessageBox.StandardButton.Ok)
         except TypeError as e:
             msg = f"Uable to interpret Workflow file {filename}:\n{e}"
+            logger.error(msg)
+            QMessageBox.critical(self, "Error", msg, QMessageBox.StandardButton.Ok)
+        except ValueError as e:
+            msg = f"Uable to interpret Workflow file {filename}:\n{e}"
+            logger.error(msg)
             QMessageBox.critical(self, "Error", msg, QMessageBox.StandardButton.Ok)
 
 

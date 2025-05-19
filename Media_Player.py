@@ -219,6 +219,13 @@ QPushButton:disabled {
         layout.addLayout(btn_layout)
         self.setLayout(layout)
 
+        def keyPressEvent(self, event):
+            if event.key() == Qt.Key.Key_Escape:
+                if self.isFullScreen():
+                    self.showNormal()
+            else:
+                super().keyPressEvent(event)
+
     def get_max_media_size(self):
         screen_size = QGuiApplication.primaryScreen().availableGeometry().size()
         # Estimate: caption + buttons + margins = approx 150px

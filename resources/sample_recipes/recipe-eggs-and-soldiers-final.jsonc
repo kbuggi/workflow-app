@@ -82,7 +82,7 @@
 	    "PlateUp" : {
         	"Steps": ["Put eggs, egg cups and soldiers onto the plate", "Enjoy!"],
                 "DurationSeconds" : 30,
-    	    	"Image" : "todo.jpg"
+                "Type" : "Active"
   	  }
 	    
         },

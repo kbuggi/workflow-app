@@ -170,7 +170,6 @@ class SimpleDAG:
             return []
 
     def _old_str(self):
-
         nodes = list(self.graph.nodes)
         filtered_nodes = []
         for node in self.graph.nodes:
@@ -346,7 +345,6 @@ class SimpleDAG:
 
 
 if __name__ == "__main__":
-
     dag = SimpleDAG()
 
     dag.add_node("a1", duration=5, column=1)

@@ -484,7 +484,6 @@ QPushButton:disabled {{
             self.done_button.setToolTip("Move onto next task")
 
         else:
-
             # When the timer is not running, enable the resume (done can always be pressed anyway)
             self.playpause_button.setIcon(Config.ICON_RESUME)
             self.extend_button.setEnabled(False)
@@ -999,6 +998,13 @@ class MainWindow(QMainWindow):
         # Now UI is setup
         self.setLayout(self.main_layout)
         self.setCentralWidget(self.central)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            if self.isFullScreen():
+                self.showNormal()
+            else:
+                super().keyPressEvent(event)
 
     def start_overall_status_bar(self):
         self.status_right.setText("Started")

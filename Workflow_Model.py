@@ -397,9 +397,9 @@ class Stream:
                 ]  # this is JSON defining the task
                 task = Task(task_name, task_dictionary, parent_name=self.name)
                 self.task_list.append(task)
-                self.task_name_map[task_name] = (
-                    task  # needed later to do x-stream links
-                )
+                self.task_name_map[
+                    task_name
+                ] = task  # needed later to do x-stream links
                 if first:
                     self.task_first = task
                     first = False
