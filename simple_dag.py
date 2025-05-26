@@ -80,9 +80,10 @@ class SimpleDAG:
     def remove_in_edges(self, name: str):
         """remove all edges into node; for example a Stream node"""
         name = str(name)
-        edges = self.graph.in_edges(name)
-        for edge in edges:
-            self.remove_edge(edge)
+        # force list to create a static copy, and avoid RuntimeError: dictionary changed size during iteration
+        edges = list(self.graph.in_edges(name))
+        for from_node, to_node in edges:
+            self.graph.remove_edge(from_node, to_node)
 
     def update_duration(self, name: str, new_duration: int, floor=0):
         """Update duration of an existing node."""
@@ -397,6 +398,12 @@ if __name__ == "__main__":
 
     print("incoming nodes to b1", g.in_nodes("b1"))
     print("\n")
+
+    print("incoming edges to b1", g.in_edges("b1"))
+    print("\n")
+
+    g.remove_in_edges("b1")
+    g.plot("output/plot3.svg")
 
     print("incoming edges to b1", g.in_edges("b1"))
     print("\n")

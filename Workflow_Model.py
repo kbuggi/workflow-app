@@ -397,9 +397,9 @@ class Stream:
                 ]  # this is JSON defining the task
                 task = Task(task_name, task_dictionary, parent_name=self.name)
                 self.task_list.append(task)
-                self.task_name_map[
-                    task_name
-                ] = task  # needed later to do x-stream links
+                self.task_name_map[task_name] = (
+                    task  # needed later to do x-stream links
+                )
                 if first:
                     self.task_first = task
                     first = False
@@ -495,22 +495,27 @@ class Stream:
 
         row = in_row  # arrow starts at the triggering task's row and goes to the triggered stream's column
         for task in self.task_list:
+            if not task.trigger_stream_list:
+                row += 1
+                continue
             for triggered_stream in task.trigger_stream_list:
-                print(f"yielding trigger itself {task.name} to {triggered_stream.name}")
+                print(
+                    f"yielding trigger itself {task.name} to {triggered_stream.name} - same row as trigger"
+                )
                 yield "Trigger", f"{self.name}/{task.name}->{triggered_stream.name}", triggered_stream.column, row, triggered_stream
-                row += 1
-                print(f"yielding triggered stream {triggered_stream.name}")
-                yield "Stream", triggered_stream.name, triggered_stream.column, row, triggered_stream
-                row += 1
+                print(
+                    f"yielding triggered stream {triggered_stream.name} - next row down from the trigger/arrow"
+                )
+                yield "Stream", triggered_stream.name, triggered_stream.column, row + 1, triggered_stream
                 for (
                     yielded_type_string,
                     yielded_name,
                     yielded_column,
                     yielded_row,
                     yielded_reference,
-                ) in triggered_stream.iterator_visualiser(row, chain_set):
+                ) in triggered_stream.iterator_visualiser(row + 2, chain_set):
                     yield yielded_type_string, yielded_name, yielded_column, yielded_row, yielded_reference
-                row += 1
+            row += 1  # now we move down to the next task, which is the next row in the grid
 
     def iterator(self):
         column = 1

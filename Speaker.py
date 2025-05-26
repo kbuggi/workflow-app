@@ -70,10 +70,10 @@ class Speaker(QObject):
             print(f"Speaker:Failed to delete temp folder: {e}")
 
     def fun_alert(self):
-        self.play_audio_file("resources\audio/submarine.mp3")
+        self.play_audio_file(r"resources/audio/submarine.mp3")
 
     def fun_alert2(self):
-        self.play_audio_file("resources\audio/ping.mp3")
+        self.play_audio_file(r"resources/audio/ping.mp3")
 
 
 if __name__ == "__main__":
