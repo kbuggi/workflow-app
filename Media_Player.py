@@ -18,8 +18,10 @@ from PyQt6.QtCore import Qt, QTimer, QUrl
 from PyQt6.QtGui import QPixmap, QKeySequence, QShortcut
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtMultimediaWidgets import QVideoWidget
-from PyQt6.QtGui import QGuiApplication
+from PyQt6.QtGui import QGuiApplication, QIcon
 from PyQt6.QtWidgets import QInputDialog
+
+from config import Config
 
 from mimetypes import guess_type
 
@@ -135,8 +137,15 @@ class SlideShowPlayer(QWidget):
         self.play_button = QPushButton("⏸️")
         self.prev_button = QPushButton("⏮️")
         self.next_button = QPushButton("⏭️")
-        self.skip_back_button = QPushButton("⏪")
-        self.skip_forward_button = QPushButton("⏩")
+
+        if Config.os_name == "darwin" and Config.os_version > 13:
+            self.skip_back_button = QPushButton("⬅️")
+            self.skip_forward_button = QPushButton("➡️")
+        else:
+            self.skip_back_button = QPushButton("⏪")
+            self.skip_forward_button = QPushButton("⏩")
+
+
         self.jump_button = QPushButton("🦘")
         # tried but didn't look consistent #self.jump_button.setText("⏱️")
 
@@ -513,6 +522,16 @@ if __name__ == "__main__":
         if not os.path.exists(args.path):
             print(f"Invalid path {args.path}")
             sys.exit()
+
+
+    if Config.os_name == "darwin":
+        os.environ['QT_MAC_WANTS_ICON'] = '1'
+        icon_path = Config.MACOS_ICON_APP_MEDIA
+        icon = QIcon(icon_path)
+    else:
+        icon = Config.ICON_APP_MEDIA
+    app.setWindowIcon(icon)
+
 
     media_path = args.path
     media_list = MediaList(media_path)

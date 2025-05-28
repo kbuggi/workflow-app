@@ -1,4 +1,4 @@
-import sys, platform
+import sys, platform, os
 from PyQt6.QtCore import QTimer, Qt, QSettings, QSize
 from PyQt6.QtWidgets import (
     QApplication,
@@ -1184,6 +1184,14 @@ if __name__ == "__main__":
                 "fixed_font",
                 QFontDatabase.systemFont(QFontDatabase.SystemFont.FixedFont),
             )
+    if Config.os_name == "darwin":
+        os.environ['QT_MAC_WANTS_ICON'] = '1'
+        icon_path = Config.MACOS_ICON_APP_ENGINE
+        icon = QIcon(icon_path)
+    else:
+        icon = Config.ICON_APP_ENGINE
+    app.setWindowIcon(icon)
+
 
     logger.info(f"Processing workflow {args.filename}")
     try:

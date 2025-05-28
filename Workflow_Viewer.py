@@ -26,6 +26,8 @@ from PyQt6.QtWidgets import (
     QMessageBox,
 )
 from PyQt6.QtCore import Qt, QTimer, QSettings, QProcess
+from PyQt6.QtGui import QIcon
+
 
 
 # Configure module-level logger
@@ -37,40 +39,84 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
+from PyQt6.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtCore import QTimer
+
+class StickyButton(QPushButton):
+    def __init__(self, text="", sticky_seconds=3):
+        super().__init__(text)
+        self.lock_duration = sticky_seconds * 1000  
+        self.setup_style()
+        # Connect click signal to lock logic
+        self.clicked.connect(self.lock_button)
+
+
+    def setup_style(self):
+        # Stylesheet with pressed state; disabled state will use the same style to appear sticky. 
+        common_button_style = """
+QPushButton {
+    font-size: 24pt;
+}
+QPushButton:pressed {
+    background-color: #00aaff;
+    border-radius: 8px;
+}
+QPushButton:disabled {
+    background-color: #00aaff;
+    border-radius: 8px;
+}
+"""
+        self.setStyleSheet(common_button_style)
+
+
+    def lock_button(self):
+        # Immediately disable the button and force the pressed style
+        self.setEnabled(False)
+        
+        # Set up a timer to re-enable after lock_duration
+        QTimer.singleShot(self.lock_duration, self.unlock_button)
+
+    def unlock_button(self):
+        self.setEnabled(True)
 
 class WorkflowViewer(QMainWindow):
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, ticks=0):
         super(WorkflowViewer, self).__init__()
         self.processes = []
         self.w = None
         self.filename = None
         self.controller = None
+        self.ticks = ticks
         self.setWindowTitle("Workflow_Viewer")
 
         self.central = QWidget()
         self.main_layout = QVBoxLayout(self.central)
 
+
         button_layout = QHBoxLayout()
-        self.open_button = QPushButton("📂 Open recipe")
+        self.open_button = StickyButton("📂 Open recipe")
         self.open_button.clicked.connect(self.open_file_dialog)
         button_layout.addWidget(self.open_button)
 
-        self.sync_button = QPushButton("▶🔁  Sync recipes")
+        self.sync_button = StickyButton("🔁 Sync recipes")
         self.sync_button.clicked.connect(self.sync_recipes)
         button_layout.addWidget(self.sync_button)
 
-        self.media_button = QPushButton("▶️  Play recipe media")
+        self.media_button = StickyButton("▶️ Play recipe media")
         self.media_button.clicked.connect(self.play_media)
         button_layout.addWidget(self.media_button)
 
-        self.start_button = QPushButton("➡️  Start recipe")
+        self.start_button = StickyButton("➡️ Start recipe")
         self.start_button.clicked.connect(self.start_recipe)
         button_layout.addWidget(self.start_button)
         self.main_layout.addLayout(button_layout)
         self.main_layout.addStretch()  # Keep buttons at top
+        #self.init_buttons()
 
-        self.setLayout(self.main_layout)
         self.setCentralWidget(self.central)
+        self.main_layout.addStretch() 
+        self.setLayout(self.main_layout)
+
         # Create Statusbar
         # self.status = self.statusBar()
 
@@ -78,6 +124,18 @@ class WorkflowViewer(QMainWindow):
             self.load_file(filename)
         else:
             self.load_most_recent_file()
+
+    def init_buttons(self):
+        for button in [
+            self.open_button,
+            self.sync_button,
+            self.media_button,
+            self.start_button,
+        ]:
+            button.setStyleSheet(common_button_style)
+        return
+
+
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Escape:
@@ -87,7 +145,17 @@ class WorkflowViewer(QMainWindow):
             super().keyPressEvent(event)
 
     def on_process_finished(self, process, exitCode, exitStatus):
-        self.showFullScreen()
+        try:
+            self.showFullScreen()
+        except Exception as e:
+            logger.error(f"Error returning to full screen: {e}")
+            QMessageBox.critical(
+                None,
+                "Error",
+                f"Error showing full screen: {e}",
+                QMessageBox.StandardButton.Ok,
+            )
+            return
         logger.info(f"Sub-process {process} exited with code {exitCode}")
         self.processes.remove(process)
         if self.isMinimized():
@@ -173,7 +241,11 @@ class WorkflowViewer(QMainWindow):
         workflow_file = self.filename
 
         args = [code, workflow_file]
-        logger.info(f"Starting workflow {workflow_file} ...")
+        if self.ticks:
+            args.append("--tick")
+            args.append(str(self.ticks))
+
+        logger.info(f"Starting workflow {workflow_file} with args {args} ...")
 
         process.start(python, args)
         logger.info(f"workflow started in Sub-process {process} ")
@@ -254,9 +326,12 @@ class WorkflowViewer(QMainWindow):
 
     def populate_controller(self):
         # self.w holds workflow
+        max_row = 0
 
         for type_string, name, column, row, reference in self.w.iterator_visualiser():
-            logger.info(
+            if row > max_row:
+                max_row = row
+            logger.info(    
                 f"viz: type_string:{type_string} name:{name} column:{column} row:{row}"
             )
             # set defaults for each cell; type-specific settings will override
@@ -288,7 +363,7 @@ class WorkflowViewer(QMainWindow):
                 text_colour = Qt.GlobalColor.white
                 width = 3
             elif type_string == "Trigger":
-                background_colour = Qt.GlobalColor.black
+                background_colour = Qt.GlobalColor.transparent
                 label = "↘️"
                 dictionary = {"trigger": name}
             else:
@@ -299,6 +374,10 @@ class WorkflowViewer(QMainWindow):
             self.controller.populate_cell(
                 column, row, width, text_colour, background_colour, label, dictionary
             )
+        if max_row < 15:
+            self.controller.populate_cell(1,15,1, Qt.GlobalColor.black, Qt.GlobalColor.transparent, "", None)
+        self.controller.populate_cell(3,0,1, Qt.GlobalColor.black, Qt.GlobalColor.transparent, "", None)
+
 
         # self.controller.reset_window_height() # resize window to show all rows (if possible)
 
@@ -361,12 +440,27 @@ if __name__ == "__main__":
         default=None,
         help="recipe/workflow in json/jsonc format (last will be opened if none provided)",
     )
+    parser.add_argument(
+        "-t",
+        "--tick",
+        type=int,
+        help="Number of seconds to 'tick off' the remaining time every real second (optional)",
+    )
+
     args = parser.parse_args()
+    ticks = args.tick if args.tick else 0
 
     print("Starting application...")
     app = QApplication(sys.argv)
+    if Config.os_name == "darwin":
+        os.environ['QT_MAC_WANTS_ICON'] = '1'
+        icon_path = Config.MACOS_ICON_APP_VIEWER
+        icon = QIcon(icon_path)
+    else:
+        icon = Config.ICON_APP_VIEWER
+    app.setWindowIcon(icon)
 
-    window = WorkflowViewer(args.filename)
+    window = WorkflowViewer(args.filename, ticks)
     # User feedback change -  Start the application in fullscreen mode
     window.showFullScreen()
 

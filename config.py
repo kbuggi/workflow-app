@@ -16,11 +16,19 @@ class Config:
 
     # In case os specific settings are needed
     if os_name == "darwin":  # macOS
-        pass
-    elif os_name == "windows":  # Windows
-        pass
+        try:
+            os_version = int(platform.mac_ver()[0].split('.')[0])
+        except:
+            os_version = 0
+        assert  os_version >= 11, "Unsupported macOS version. Requires macOS 11(Big Sur) or higher."
+    elif os_name == "windows":  # 
+        try:
+            os_version = int(platform.release())
+        except:
+            os_version = 0
+        assert os_version >= 10, "Unsupported Windows version. Requires Windows 10 or higher."
     else:
-        pass
+        assert False, f"Unsupported OS: {os_name}. Only macOS and Windows are supported."
 
     # Resource paths
     RESOURCE_PATH = "resources"
@@ -43,6 +51,13 @@ class Config:
     ICON_REDUCE = QIcon(f"{ICONS_PATH}/minus-solid.svg")
     ICON_DONE = QIcon(f"{ICONS_PATH}/forward-solid.svg")
     ICON_BACK = QIcon(f"{ICONS_PATH}/backward-solid.svg")
+    ICON_APP_VIEWER = QIcon(f"{ICONS_PATH}/app-viewer.png")
+    ICON_APP_ENGINE = QIcon(f"{ICONS_PATH}/app-engine.png")
+    ICON_APP_MEDIA = QIcon(f"{ICONS_PATH}/app-media.png")
+
+    MACOS_ICON_APP_VIEWER =  str(f"{ICONS_PATH}/Workflow_Viewer.icns")
+    MACOS_ICON_APP_ENGINE = str(f"{ICONS_PATH}/Workflow_Engine.icns")
+    MACOS_ICON_APP_MEDIA = str(f"{ICONS_PATH}/Media_Player.icns")
 
     # Icon sizes
     ICON_SIZE_SMALL = QSize(24, 24)

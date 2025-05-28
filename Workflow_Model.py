@@ -693,7 +693,7 @@ class WorkflowStream:
     def iterator_visualiser(self):
         # yield type_string = "Stream/Task", name, column=(Middle/Left/Right),row=0, reference
         # Need to return Pre-Flight
-        row = 0
+        row = 1
         if self.pre_checklist:
             logger.debug(f"viz: yielding PrePostStream: {self.pre_checklist.name}")
             yield "PrePostStream", "Preflight Checklist", "Left", row, self.pre_checklist
@@ -703,14 +703,14 @@ class WorkflowStream:
         logger.debug(f"viz: yielding go_stream, {self.go_stream_name}")
         yield "Stream", self.go_stream.name, self.go_stream.column, row, self.go_stream
         # yield "Task", self.go_stream.name, self.go_stream.column, 5, self.go_stream
-
+        row += 1
         for (
             type_string,
             name,
             column,
             row,
             reference,
-        ) in self.go_stream.iterator_visualiser(row=2):
+        ) in self.go_stream.iterator_visualiser(row):
             logger.debug(
                 f"viz: yielding workflow, name:{name} column:{column} row:{row}"
             )

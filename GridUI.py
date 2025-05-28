@@ -93,8 +93,11 @@ class GridCell(QGraphicsRectItem):
         super().__init__(0, 0, adjusted_width, self.CELL_HEIGHT)
         self.setFlag(QGraphicsRectItem.GraphicsItemFlag.ItemIsSelectable)
 
-        self.setBrush(QBrush(background_colour))
-        self.setPen(QPen(Qt.GlobalColor.black))
+        if background_colour==Qt.GlobalColor.transparent:
+            self.setPen(QPen(Qt.PenStyle.NoPen))  # No border for transparent background
+        else:
+            self.setBrush(QBrush(background_colour))
+            self.setPen(QPen(Qt.GlobalColor.black))
 
         self.label = label
         self.data = data
@@ -290,10 +293,10 @@ class GridController(QWidget):
 
         # self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
 
-        self.setGeometry(100, 100, 1600, 300)
+        self.setGeometry(100, 100, 1600, 500)
         self.setWindowIcon(QIcon(os.path.abspath("json_icon.png")))
 
-        self.maxRow = 5
+        self.maxRow = 10
         self.maxCol = 3
 
     def populate_cell(
